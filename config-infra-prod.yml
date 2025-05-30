@@ -19,4 +19,4 @@ variables:
 
   # For pipeline reference
   resource_group: default_resource_group
-  aml_workspace: Project_3
+  aml_workspace: Azure_Project_3
