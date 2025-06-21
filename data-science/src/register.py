@@ -31,9 +31,24 @@ def main(args):
     # -----------  WRITE YOR CODE HERE -----------
     
     # Step 1: Load the model from the specified path using `mlflow.sklearn.load_model` for further processing.  
-    # Step 2: Log the loaded model in MLflow with the specified model name for versioning and tracking.  
+    model = mlflow.sklearn.load_model(args.model_path)
+    
+    # Step 2: Log the loaded model in MLflow with the specified model name for versioning and tracking.
+    mlflow.sklearn.log_model(model, args.model_name)
+    
     # Step 3: Register the logged model using its URI and model name, and retrieve its registered version.  
+    run_id = mlflow.active_run().info.run_id
+    model_uri = f'runs:/{run_id}/{args.model_name}'
+    mlflow_model = mlflow.model_name(model_uri, args.model_path)  # register the model with model_uri and model_name
+    model_version = mlflow_model.version  # Get the version of the registered model
+
     # Step 4: Write model registration details, including model name and version, into a JSON file in the specified output path.  
+    print("Writing JSON")
+    model_info = {"id": f"{args.model_name}:{model_version}"}
+    output_path = os.path.join(args.model_info_output_path, "model_info.json")  
+    with open(output_path, "w") as of:
+        json.model_info(model_info, of)  # write model_info to the output file
+
 
 
 if __name__ == "__main__":
@@ -44,9 +59,9 @@ if __name__ == "__main__":
     args = parse_args()
     
     lines = [
-        f"Model name: {args.________}",
-        f"Model path: {args.________}",
-        f"Model info output path: {args.________}"
+        f"Model name: {args.model_name}",
+        f"Model path: {args.model_path}",
+        f"Model info output path: {args.model_info_output_path}"
     ]
 
     for line in lines:
